@@ -2,9 +2,9 @@
 @plugin '@tailwindcss/typography';
 
 :root {
-    --body-bg: #202020;
+	--body-bg: #202020;
 }
 
 body {
-    background-color: var(--body-bg);
+	background-color: var(--body-bg);
 }

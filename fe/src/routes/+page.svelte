@@ -18,31 +18,28 @@
 		tasks = deleteTask(tasks, taskId);
 	}
 
-	let updatedText = $state(false);
-
-	function handleUpdateText(taskId: Task['id'], taskText: Task['text']) {
-		// const updatedText = prompt('Замініть завдання', taskText);
-		
-		if(updatedText !== null) tasks = updateTaskText(tasks, taskId, taskText);
-	}
+	let editingId = $state<string | null>(null);
 
 	function handleToggle(taskId: Task['id']) {
 		tasks = toggleTask(tasks, taskId);
+	}
+
+	let left = $derived(tasks.filter((t) => !t.completed).length);
+
+	let draft = $state('');
+
+	function startEdit(task: Task) {
+		editingId = task.id;
+		draft = task.text;
 	}
 </script>
 
 <div class="todo-container">
 	<div class="todo">
-		<form action="GET" onsubmit={handleSubmit}>
+		<form onsubmit={handleSubmit}>
 			<label for="new-task">Нова задача</label>
 
-			<input
-				bind:value={inputValue}
-				type="text"
-				name=""
-				id="new task"
-				placeholder="Напиши задачу"
-			/>
+			<input bind:value={inputValue} type="text" id="new-task" placeholder="Напиши задачу" />
 
 			<button type="submit"> Додати </button>
 		</form>
@@ -50,33 +47,49 @@
 
 	<div class="tasks-container">
 		<h1>Ваші завдання</h1>
+		<span>
+			{left} загально
+		</span>
 
 		<div class="tasks">
 			{#each tasks as task (task.id)}
 				<div class="task">
-					<p>
-						{task.text}
-					</p>
+					<p class:done={task.completed}>{task.text}</p>
 
-					{#if updatedText}
-						<form action="GET" onsubmit={() => handleUpdateText}>
+					{#if editingId === task.id}
+						<form
+							onsubmit={(e) => {
+								e.preventDefault();
+								tasks = updateTaskText(tasks, editingId!, draft);
+								editingId = null;
+							}}
+						>
 							<label for="edit">Введіть нову задачу</label>
-							<input type="text">
+							<input
+								onkeydown={(e) => {
+									if (e.key === 'Escape') editingId = null;
+								}}
+								bind:value={draft}
+								type="text"
+								id="edit"
+							/>
 
 							<button type="submit">Додати</button>
-							<button>Відміна</button>
+							<button
+								type="button"
+								onclick={() => {
+									editingId = null;
+									draft = '';
+								}}>Відміна</button
+							>
 						</form>
-						
 					{/if}
 
+					<button type="button" onclick={() => handleToggle(task.id)}> Виконано </button>
 
-					
+					<button type="button" onclick={() => startEdit(task)}> Редагувати </button>
 
-					<button onclick={() => handleToggle(task.id)}> Виконано </button>
-
-					<button onclick={() => updatedText = true}> Редагувати </button>
-
-					<button onclick={() => handleDelete(task.id)}> Видалити </button>
+					<button type="button" onclick={() => handleDelete(task.id)}> Видалити </button>
 				</div>
 			{/each}
 		</div>
@@ -120,6 +133,7 @@
 				}
 			}
 		}
+
 		.tasks-container {
 			border: 0.125rem solid white;
 			border-radius: 0.5rem;
@@ -150,8 +164,12 @@
 					form {
 						input {
 							border: 0.125rem solid white;
-							
 						}
+					}
+
+					.done {
+						text-decoration: line-through;
+						opacity: 0.5;
 					}
 				}
 			}
