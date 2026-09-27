@@ -30,9 +30,7 @@
 				isEditing = false;
 			}}
 		>
-			<label for="task-edit">Введіть нову задачу</label>
 			<input
-				id="task-edit"
 				onkeydown={(e) => {
 					if (e.key === 'Escape') isEditing = false;
 				}}
