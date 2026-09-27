@@ -48,7 +48,7 @@
 	<div class="tasks-container">
 		<h1>Ваші завдання</h1>
 		<span>
-			{left} загально
+			Залишилось: {left}
 		</span>
 
 		<div class="tasks">
@@ -60,7 +60,7 @@
 						<form
 							onsubmit={(e) => {
 								e.preventDefault();
-								tasks = updateTaskText(tasks, editingId!, draft);
+								tasks = updateTaskText(tasks, task.id, draft);
 								editingId = null;
 							}}
 						>
