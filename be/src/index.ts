@@ -1,4 +1,6 @@
 import express, { type Express, type Request, type Response } from 'express';
+import { listTasks } from './services/taskService.ts';
+
 
 // ну з типами все понятно щоб не віддправити те що не тре і побачити помилку
 type Task = {
@@ -17,7 +19,7 @@ app.get('/api/tasks', (req: Request, res: Response) => {
     // тут ми наче побачим метод використаний і адресу що питали
     console.log(req.method, req.url);
     // тут відповідь сервера
-    res.json(tasks);
+    res.json(listTasks());
 })
 // тут не зовсім розмію як він має спрацьовувати для запитів які не були оброблені. запити ж мають бути оброблені
 app.use((req: Request, res: Response) => {
