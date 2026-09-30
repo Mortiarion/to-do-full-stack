@@ -7,8 +7,8 @@ import { errorHandler } from "./middleware/errorHandler.ts";
 
 export const app: Express = express();
 
-app.use(express.json());
 app.use(logger);
+app.use(express.json());
 app.use('/api/tasks', taskRoutes);
 app.use(notFound);
 app.use(errorHandler);
