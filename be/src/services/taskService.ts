@@ -21,3 +21,7 @@ export function addTask(text: string): Task | null {
 
     return task;
 }
+
+export function findTask(id: string): Task | undefined{
+    return tasks.find((task) => task.id === id);
+}
