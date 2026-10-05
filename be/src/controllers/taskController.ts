@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 
-import { addTask, findTask, listTasks } from "../services/taskService.ts";
+import { addTask, findTask, listTasks, removeTask, updateTask } from "../services/taskService.ts";
+import type { TaskChanges } from "../types/task.ts";
 
 export function getTasks(req: Request, res: Response) {
     res.json(listTasks());
@@ -40,4 +41,40 @@ export function getTaskById(req: Request, res: Response) {
     }
 
     res.json(task);
+}
+
+export function updateTasks(req: Request, res: Response) {
+    const raw = req.params.id;
+    const id = typeof raw === 'string' ? raw : '';
+
+    const changes: TaskChanges = {};
+
+    if(typeof req.body?.completed === 'boolean') changes.completed = req.body.completed;
+
+    if(typeof req.body?.text === 'string') changes.text = req.body.text;
+
+    const task = updateTask(id, changes);
+
+    if(task === undefined) {
+        res.status(404).json({message: 'Завдання не знайдено'});
+
+        return;
+    }
+
+    res.status(200).json(task);
+}
+
+export function deleteTask(req: Request, res: Response) {
+    const raw = req.params.id;
+    const id = typeof raw === 'string' ? raw : '';
+
+    const removed = removeTask(id);
+
+    if(!removed) {
+        res.status(404).json({message: 'Завдання не знайдено'})
+
+        return;
+    }
+
+    res.status(204).send();
 }
