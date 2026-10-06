@@ -3,17 +3,21 @@ import type { Task, TaskChanges } from "../types/task.ts";
 const tasks: Task[] = [];
 
 export function listTasks(): Task[] {
-    return tasks;
+    return tasks.map((task) => ({...task}));
+}
+
+export function trimText(text: string) {
+    return text.trim();
 }
 
 export function addTask(text: string): Task | null {
-    const trimmed = text.trim();
+    const value = trimText(text);
 
-    if(!trimmed) return null;
+    if(!value) return null;
 
     const task: Task = {
         id: crypto.randomUUID(),
-        text: trimmed,
+        text: value,
         completed: false
     };
 

@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 
-import { addTask, findTask, listTasks, removeTask, updateTask } from "../services/taskService.ts";
+import { addTask, findTask, listTasks, removeTask, trimText, updateTask } from "../services/taskService.ts";
 import type { TaskChanges } from "../types/task.ts";
 
 export function getTasks(req: Request, res: Response) {
@@ -51,7 +51,15 @@ export function updateTasks(req: Request, res: Response) {
 
     if(typeof req.body?.completed === 'boolean') changes.completed = req.body.completed;
 
-    if(typeof req.body?.text === 'string') changes.text = req.body.text;
+    if(typeof req.body?.text === 'string') {
+        if(!trimText(req.body?.text)) {
+            res.status(400).json({message:'Не має бути пустою'});
+
+            return;
+        }
+
+        changes.text = trimText(req.body?.text);
+    }
 
     const task = updateTask(id, changes);
 
