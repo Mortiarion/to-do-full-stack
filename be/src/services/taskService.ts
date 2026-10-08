@@ -26,8 +26,16 @@ export function addTask(text: string): Task | null {
     return task;
 }
 
-export function findTask(id: string): Task | undefined{
+function findTask(id: string): Task | undefined{
     return tasks.find((task) => task.id === id);
+}
+
+export function readTask(id: string): Task | undefined {
+    const task = findTask(id);
+
+    if(!task) return undefined;
+
+    return {...task};
 }
 
 export function updateTask(id: string, changes: TaskChanges): Task | undefined {

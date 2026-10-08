@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 
-import { addTask, findTask, listTasks, removeTask, trimText, updateTask } from "../services/taskService.ts";
+import { addTask, readTask, listTasks, removeTask, trimText, updateTask } from "../services/taskService.ts";
 import type { TaskChanges } from "../types/task.ts";
 
 export function getTasks(req: Request, res: Response) {
@@ -32,7 +32,7 @@ export function getTaskById(req: Request, res: Response) {
 
     const id = typeof raw === 'string' ? raw : 'undefined';
 
-    const task = findTask(id);
+    const task = readTask(id);
 
     if (task === undefined) {
         res.status(404).json({ message: 'Задача не знайдена' });
