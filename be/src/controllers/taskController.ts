@@ -52,13 +52,15 @@ export function updateTasks(req: Request, res: Response) {
     if(typeof req.body?.completed === 'boolean') changes.completed = req.body.completed;
 
     if(typeof req.body?.text === 'string') {
-        if(!trimText(req.body?.text)) {
+        const text = trimText(req.body.text);
+
+        if(!text) {
             res.status(400).json({message:'Не має бути пустою'});
 
             return;
         }
 
-        changes.text = trimText(req.body?.text);
+        changes.text = text;
     }
 
     const task = updateTask(id, changes);
